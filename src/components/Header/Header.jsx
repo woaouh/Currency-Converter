@@ -19,7 +19,6 @@ export default function Header() {
         </NavLink>
         <NavLink
           to="/converter"
-          exact
           activeClassName={classes.Active}
         >
           Converter

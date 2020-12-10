@@ -12,12 +12,8 @@ export default function App() {
       <Header />
       <main>
         <Switch>
-          <Route path="/converter">
-            <Converter />
-          </Route>
-          <Route path="/">
-            <Rates />
-          </Route>
+          <Route path="/converter" component={Converter} />
+          <Route path="/" component={Rates} />
         </Switch>
       </main>
     </>
