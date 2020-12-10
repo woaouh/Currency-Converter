@@ -12,7 +12,7 @@ export default function App() {
       <Header />
       <main>
         <Switch>
-          <Route path="/Converter">
+          <Route path="/converter">
             <Converter />
           </Route>
           <Route path="/">
