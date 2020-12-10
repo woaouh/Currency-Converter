@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+}
+.CurrencyList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.LeftBlock select {
+  margin: 0;
+  margin-right: auto;
+}
+
+.MiddleBlock {
+  padding: 0 50px;
+  text-align: center;
+  max-width: 100%;
+}
+
+.MiddleBlock time {
+  display: block;
+  padding: 15px;
+  margin-bottom: 30px;
+}
+
+.MiddleBlock input {
+  margin: 0;
+  max-width: 100%;
+}
+
+.RightBlock select {
+  margin: 0;
+  margin-left: auto;
+}
+
+@media ( max-width: 480px ) {
+  .MiddleBlock {
+    padding: 0 10px;
+  }
+}
+
+@media ( max-width: 400px ) {
+  .CurrencyList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .MiddleBlock {
+    margin-top: 50px;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 4;
+  }
+
+  .MiddleBlock input {
+    width: 100%;
+  }
+}
