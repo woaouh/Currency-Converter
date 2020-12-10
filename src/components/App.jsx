@@ -12,8 +12,8 @@ export default function App() {
       <Header />
       <main>
         <Switch>
+          <Route path="/" component={Rates} exact />
           <Route path="/converter" component={Converter} />
-          <Route path="/" component={Rates} />
         </Switch>
       </main>
     </>
