@@ -1,81 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import classes from './CurrencyList.module.css';
+import classes from './CurrencyList.module.sass';
 
-import CurrencySelect from '../CurrencySelect/CurrencySelect';
-
-import { fetchCurrencyRates, changeStatus } from '../../features/currencySlice';
+import { fetchCurrencyRates, addCurrencyToSaved } from '../../features/currencySlice';
+import { getValueByKey, calcCurrencyRate } from '../../helpers/helpers';
+import Button from '../Button/Button';
 
 export default function CurrencyList() {
   const dispatch = useDispatch();
+  const base = useSelector((state) => state.currency.base);
   const data = useSelector((state) => state.currency.data);
   const currencies = useSelector((state) => state.currency.currencies);
+  const savedCurrencies = useSelector((state) => state.currency.savedCurrencies);
   const currencyStatus = useSelector((state) => state.currency.status);
-
-  const [firstCurrency, setFirstCurrency] = useState('EUR');
-  const [secondCurrency, setSecondCurrency] = useState('USD');
-  const [firstCurrencyValue, setFirstCurrencyValue] = useState(1);
-  const [secondCurrencyValue, setSecondCurrencyValue] = useState(0);
-
-  function getKeyByValue(value) {
-    setSecondCurrencyValue(data.rates[value]);
-  }
 
   useEffect(() => {
     if (currencyStatus === 'idle') {
-      dispatch(fetchCurrencyRates(firstCurrency));
-    }
-    if (currencyStatus === 'succeeded') {
-      getKeyByValue(secondCurrency);
+      dispatch(fetchCurrencyRates(base));
     }
   }, [currencyStatus, dispatch]);
 
-  function onChangeCurrencyHandler({ target }) {
-    if (target.classList.contains('first-currency-select')) {
-      setFirstCurrency(target.value);
-      dispatch(changeStatus());
+  function onAddCurrencyHandler(cur) {
+    if (savedCurrencies.length < 2) {
+      dispatch(addCurrencyToSaved(cur));
     }
-    if (target.classList.contains('second-currency-select')) {
-      setSecondCurrency(target.value);
-      getKeyByValue(target.value);
-    }
-  }
-
-  function onNumberChangeHandler({ target }) {
-    setFirstCurrencyValue(target.value);
-  }
-
-  function calcCurrencyRate() {
-    return (firstCurrencyValue * secondCurrencyValue).toFixed(2);
   }
 
   return (
-    <div className={classes.CurrencyList}>
-      <div className={classes.LeftBlock}>
-        <CurrencySelect
-          onChangeHandler={onChangeCurrencyHandler}
-          currencies={currencies}
-          currency={firstCurrency}
-          className="first-currency-select"
-        />
-      </div>
-      <div className={classes.MiddleBlock}>
-        <time>
-          Updated on:
-          <br />
-          {data.date}
-        </time>
-        <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder={firstCurrencyValue} onChange={onNumberChangeHandler} />
-        <p>{`${firstCurrencyValue} ${firstCurrency} = ${calcCurrencyRate()} ${secondCurrency}`}</p>
-      </div>
-      <div className={classes.RightBlock}>
-        <CurrencySelect
-          onChangeHandler={onChangeCurrencyHandler}
-          currencies={currencies}
-          currency={secondCurrency}
-          className="second-currency-select"
-        />
-      </div>
-    </div>
+    <>
+      <p>
+        1
+        {' '}
+        {base}
+        {' '}
+        equals
+      </p>
+      <table className={classes.CurrencyList}>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Rate</th>
+            <th>
+              To Saved
+              {' '}
+              <small>2 max</small>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {currencies.map((cur) => (
+            <tr key={cur}>
+              <td>{cur}</td>
+              <td>{calcCurrencyRate(25, getValueByKey(data.rates, cur))}</td>
+              <td>
+                <Button
+                  onClick={() => onAddCurrencyHandler(cur)}
+                  value={cur}
+                  disabled={!(savedCurrencies.length < 2)}
+                >
+                  Add
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }

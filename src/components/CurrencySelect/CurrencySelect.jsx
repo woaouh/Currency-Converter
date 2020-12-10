@@ -7,13 +7,10 @@ export default function CurrencySelect({
   currency,
   className,
 }) {
-  function sortByAlphabet(arr) {
-    return arr.slice().sort((a, b) => a.localeCompare(b));
-  }
   return (
     <select onChange={onChangeHandler} className={className}>
       <option value={currency}>{currency}</option>
-      {sortByAlphabet(currencies).filter((crnc) => crnc !== currency)
+      {currencies.filter((crnc) => crnc !== currency)
         .map((crnc) => <option key={crnc} value={crnc}>{crnc}</option>)}
     </select>
   );

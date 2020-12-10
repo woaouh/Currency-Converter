@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { sortByAlphabet } from '../helpers/helpers';
 
 const initialState = {
   data: {},
   status: 'idle',
+  base: 'EUR',
   error: null,
   currencies: [],
+  savedCurrencies: [],
 };
 
 const API = 'https://api.exchangeratesapi.io/latest';
@@ -30,6 +33,9 @@ const currencySlice = createSlice({
     changeStatus(state) {
       state.status = 'idle';
     },
+    addCurrencyToSaved(state, action) {
+      state.savedCurrencies.push(action.payload);
+    },
   },
   extraReducers: {
     [fetchCurrencyRates.pending]: (state) => {
@@ -38,7 +44,7 @@ const currencySlice = createSlice({
     [fetchCurrencyRates.fulfilled]: (state, action) => {
       state.status = 'succeeded';
       state.data = action.payload;
-      state.currencies = Object.keys(action.payload.rates);
+      state.currencies = sortByAlphabet(Object.keys(action.payload.rates));
       state.base = action.payload.base;
     },
     [fetchCurrencyRates.rejected]: (state, action) => {
@@ -48,6 +54,6 @@ const currencySlice = createSlice({
   },
 });
 
-export const { changeStatus } = currencySlice.actions;
+export const { changeStatus, addCurrencyToSaved } = currencySlice.actions;
 
 export default currencySlice.reducer;
