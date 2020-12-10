@@ -65,7 +65,7 @@ export default function CurrencyList() {
           <br />
           {data.date}
         </time>
-        <input type="text" placeholder={firstCurrencyValue} onChange={onNumberChangeHandler} />
+        <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder={firstCurrencyValue} onChange={onNumberChangeHandler} />
         <p>{`${firstCurrencyValue} ${firstCurrency} = ${calcCurrencyRate()} ${secondCurrency}`}</p>
       </div>
       <div className={classes.RightBlock}>
