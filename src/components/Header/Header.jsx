@@ -1,11 +1,19 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import classes from './Header.module.sass';
 
+import Select from '../Select/Select';
+import { changeBaseCurrency } from '../../redux/currencySlice';
+
 export default function Header() {
+  const dispatch = useDispatch();
   const savedCurrencies = useSelector((state) => state.currency.savedCurrencies);
+
+  function onChangeSavedCurrencyHandler({ target }) {
+    dispatch(changeBaseCurrency(target.value));
+  }
 
   return (
     <header className={classes.Header}>
@@ -25,9 +33,12 @@ export default function Header() {
         </NavLink>
       </nav>
       <ul className={classes.SavedCurrenciesList}>
-        {savedCurrencies ? savedCurrencies.map((cur) => (
-          <li key={cur}>{cur}</li>
-        )) : null}
+        {savedCurrencies ? (
+          <Select
+            currencies={savedCurrencies}
+            onChangeHandler={onChangeSavedCurrencyHandler}
+          />
+        ) : null}
       </ul>
     </header>
   );

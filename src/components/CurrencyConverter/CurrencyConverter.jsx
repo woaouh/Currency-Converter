@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classes from './CurrencyConverter.module.sass';
 
-import CurrencySelect from '../CurrencySelect/CurrencySelect';
+import Select from '../UI/Select/Select';
 
-import { fetchCurrencyRates, changeStatus } from '../../features/currencySlice';
+import { fetchCurrencyRates, changeStatus } from '../../redux/currencySlice';
 import { getValueByKey, calcCurrencyRate } from '../../helpers/helpers';
+import Input from '../UI/Input/Input';
 
 export default function CurrencyConverter() {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export default function CurrencyConverter() {
   const [secondCurrency, setSecondCurrency] = useState('USD');
   const [firstCurrencyValue, setFirstCurrencyValue] = useState(1);
   const [secondCurrencyValue, setSecondCurrencyValue] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (currencyStatus === 'idle') {
@@ -39,13 +41,23 @@ export default function CurrencyConverter() {
   }
 
   function onNumberChangeHandler({ target }) {
-    setFirstCurrencyValue(target.value);
+    setFirstCurrencyValue(parseInt(target.value, 10));
+    if (Number.isInteger(parseInt(target.value, 10))) {
+      setFirstCurrencyValue(parseInt(target.value, 10));
+    } else if (target.value === '') {
+      setFirstCurrencyValue(1);
+    } else {
+      setErrorMessage('Input value must be a number.');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
   }
 
   return (
-    <div className={classes.CurrencyConverter}>
+    <section className={classes.CurrencyConverter}>
       <div className={classes.LeftBlock}>
-        <CurrencySelect
+        <Select
           onChangeHandler={onChangeCurrencyHandler}
           currencies={currencies}
           currency={firstCurrency}
@@ -58,17 +70,20 @@ export default function CurrencyConverter() {
           <br />
           {data.date}
         </time>
-        <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder={firstCurrencyValue} onChange={onNumberChangeHandler} />
+        <div className={classes.InputBlock}>
+          <Input placeholder={firstCurrencyValue} onChangeHandler={onNumberChangeHandler} />
+          {errorMessage ? <p className={classes.ErrorMessage}>{errorMessage}</p> : null}
+        </div>
         <p>{`${firstCurrencyValue} ${firstCurrency} = ${calcCurrencyRate(firstCurrencyValue, secondCurrencyValue)} ${secondCurrency}`}</p>
       </div>
       <div className={classes.RightBlock}>
-        <CurrencySelect
+        <Select
           onChangeHandler={onChangeCurrencyHandler}
           currencies={currencies}
           currency={secondCurrency}
           className="second-currency-select"
         />
       </div>
-    </div>
+    </section>
   );
 }

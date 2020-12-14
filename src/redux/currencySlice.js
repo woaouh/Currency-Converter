@@ -9,7 +9,7 @@ const initialState = {
   base: 'EUR',
   error: null,
   currencies: [],
-  savedCurrencies: [],
+  savedCurrencies: ['EUR'],
 };
 
 const API = 'https://api.exchangeratesapi.io/latest';
@@ -36,6 +36,10 @@ const currencySlice = createSlice({
     addCurrencyToSaved(state, action) {
       state.savedCurrencies.push(action.payload);
     },
+    changeBaseCurrency(state, action) {
+      state.base = action.payload;
+      state.status = 'idle';
+    },
   },
   extraReducers: {
     [fetchCurrencyRates.pending]: (state) => {
@@ -45,7 +49,6 @@ const currencySlice = createSlice({
       state.status = 'succeeded';
       state.data = action.payload;
       state.currencies = sortByAlphabet(Object.keys(action.payload.rates));
-      state.base = action.payload.base;
     },
     [fetchCurrencyRates.rejected]: (state, action) => {
       state.status = 'failed';
@@ -54,6 +57,6 @@ const currencySlice = createSlice({
   },
 });
 
-export const { changeStatus, addCurrencyToSaved } = currencySlice.actions;
+export const { changeStatus, addCurrencyToSaved, changeBaseCurrency } = currencySlice.actions;
 
 export default currencySlice.reducer;
