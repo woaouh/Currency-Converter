@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import classes from './Header.module.sass';
 
-import Select from '../Select/Select';
+import Select from '../UI/Select/Select';
 import { changeBaseCurrency } from '../../redux/currencySlice';
 
 export default function Header() {
